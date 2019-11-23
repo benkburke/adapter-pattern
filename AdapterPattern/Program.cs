@@ -24,9 +24,7 @@ namespace AdapterPattern
                 Console.ReadKey();
 
                 // 1)
-                // Create application
-                // - LoanApplication
-                // Random data
+                // Create application                                
                 var application = new LoanApplication
                 {
                     FirstName = RandomString.Create(RandomNumber.Create(2, 8)),
@@ -47,25 +45,22 @@ namespace AdapterPattern
                 Console.ReadKey();
 
                 // 3)
-                // Submit application to lender
-                // - Lender
+                // Submit application to lender                
                 var lender = new Lender();
                 lender.SubmitApplication(application);
 
-                // 4) - No UI
+                // 4) - Handled in Lender object
                 // Lender verifies customer
                 // - New API <-> Legacy API                
                 // Adapter submits individual data points                
 
-                // 5) - No UI
+                // 5) - Handled in Lender object
                 // Lender retrieves customer score
                 // - New API <-> Legacy API                
                 // Adapter retrieves individual data points
 
                 // 6)
-                // Lender returns decision
-                // - Loan decision
-                // Return interest rate and approved/declined based on risk score
+                // Get the decision from the Lender
                 var decision = lender.MakeDecision();
 
                 // 7)
