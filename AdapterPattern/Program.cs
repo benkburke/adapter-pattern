@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Text.Json;
 using System.Threading;
 using AdapterPattern.Domain;
+using AdapterPattern.Util;
 
 namespace AdapterPattern
 {
@@ -13,43 +15,63 @@ namespace AdapterPattern
             {
                 // 0)
                 // Display starting menu
-                LoanMenu();
+                Console.Clear();
+
+                Console.WriteLine("Adapter Pattern -- Lending Context");
+                Console.WriteLine();
+
+                Console.WriteLine("1) Create Loan Application");                
+                Console.ReadKey();
 
                 // 1)
                 // Create application
                 // - LoanApplication
                 // Random data
-                var application = CreateApplication();
+                var application = new LoanApplication
+                {
+                    FirstName = RandomString.Create(RandomNumber.Create(2, 8)),
+                    LastName = RandomString.Create(RandomNumber.Create(4, 10)),
+                    Employed = RandomBool.Create(),
+                    Income = RandomNumber.Create(15000, 55000),
+                    LoanAmount = RandomNumber.Create(500, 2500)
+                };
 
                 // 2)
-                // Display application for confirmation
-                DisplayApplication(application);
+                // Display random application for confirmation
+                Console.Clear();
+
+                Console.WriteLine(JsonSerializer.Serialize(application));
+                Console.WriteLine();
+
+                Console.WriteLine("Any key to submit...");
+                Console.ReadKey();
 
                 // 3)
                 // Submit application to lender
                 // - Lender
+                var lender = new Lender();
+                lender.SubmitApplication(application);
 
-                // 4)
+                // 4) - No UI
                 // Lender verifies customer
-                // - New API <-> Legacy API
-                // Submit customer in entirety (name, employment status, income)
-                // Adapter submits individual data points
+                // - New API <-> Legacy API                
+                // Adapter submits individual data points                
 
-                // 5)
+                // 5) - No UI
                 // Lender retrieves customer score
-                // - New API <-> Legacy API
-                // Submit customer income
-                // Adapter selects individual data points to return (suggested rate, customer risk)
+                // - New API <-> Legacy API                
+                // Adapter retrieves individual data points
 
                 // 6)
                 // Lender returns decision
                 // - Loan decision
                 // Return interest rate and approved/declined based on risk score
+                var decision = lender.MakeDecision();
 
                 // 7)
                 // Display decision             
-
                 Spinner();
+                Console.WriteLine(JsonSerializer.Serialize(decision));
 
                 Console.WriteLine();
                 Console.WriteLine("Menu ( M )");
@@ -60,39 +82,6 @@ namespace AdapterPattern
         }
 
         #region UI       
-
-        private static void LoanMenu()
-        {
-            Console.Clear();
-
-            Console.WriteLine("Adapter Pattern -- Lending Context");
-            Console.WriteLine();
-
-            Console.WriteLine("1) Create Loan Application");
-
-            Console.WriteLine();
-            Console.ReadKey();
-        }
-
-        private static void DisplayApplication(LoanApplication application)
-        {
-            Console.Clear();
-
-            Console.WriteLine("New Application:");
-            Console.WriteLine();
-            Console.WriteLine($"First Name: {application.FirstName}");
-            Console.WriteLine($"Last Name: {application.LastName}");
-            Console.WriteLine($"Employed: {application.Employed}");
-            Console.WriteLine($"Income: {application.Income}");
-            Console.WriteLine($"Loan Amount: {application.LoanAmount}");
-
-            Console.WriteLine();
-
-            Console.WriteLine("Any key to submit...");
-
-            Console.WriteLine();
-            Console.ReadKey();
-        }
 
         static int counter;
 
@@ -144,46 +133,6 @@ namespace AdapterPattern
             Thread.Sleep(100);
 
             Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
-        }
-
-        #endregion
-
-        #region Logic
-
-        private static LoanApplication CreateApplication()
-        {
-            return new LoanApplication
-            {
-                FirstName = RandomString(RandomNumber(2, 10)),
-                LastName = RandomString(RandomNumber(4, 15)),
-                Employed = rng.NextDouble() >= 0.5,
-                Income = RandomNumber(15000, 55000),
-                LoanAmount = RandomNumber(500, 2500)
-            };
-        }
-
-        #endregion
-
-        #region Util
-
-        // Random seed
-        static readonly Random rng = new Random(Guid.NewGuid().GetHashCode());
-
-        static string RandomString(int count)
-        {
-            string output = "";
-
-            for (var i = 0; i <= count; i++)
-            {
-                output += (char)rng.Next('a', 'z');
-            }
-
-            return output;
-        }
-
-        static int RandomNumber(int min, int max)
-        {
-            return rng.Next(min, max);
         }
 
         #endregion

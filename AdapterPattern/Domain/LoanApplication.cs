@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace AdapterPattern.Domain
+﻿namespace AdapterPattern.Domain
 {
     public class LoanApplication
     {
